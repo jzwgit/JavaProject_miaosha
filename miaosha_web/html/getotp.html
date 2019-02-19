@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>获取手机验证码</title>
+    <link rel="stylesheet" href="../css/getotp.css">
+    <script src="../js/plugins/jquery-3.3.1.min.js"></script>
+    <script>
+      $(function(){
+	$('.getotp').on('click',function(){
+	  var telphone = $('.telphone').val();
+	  console.log(telphone);
+	  if(telphone == null || telphone == ""){
+	    alert("手机号不能为空");
+	    return false;
+	  }
+	  $.ajax({
+	    url: 'http://localhost:9090/user/getotp',
+	    type: 'POST',
+	    contentType:'application/x-www-form-urlencoded',
+	    data:{ "telphone": telphone },
+	    xhrFields:{withCredentials: true},
+	    success: function(data){
+	      console.log(data);
+	      if(data.status == "success"){
+		alert("otp发送成功，注意查收");
+		window.location.href="register.html";
+	      }else{
+		alert("otp发送失败，原因为"+data.data.errorMsg);
+	      }
+	    },
+	    error: function(error){
+	      console.log(error);
+	      alert("otp短信验证码发送失败,原因为："+error.responseText);
+	    }
+	  });
+	  return false;
+	});
+      });
+    </script>
+  </head>
+  <body>
+    <div class="content">
+      <h3 class="form-title">获取otp信息</h3>
+      <div class="form-group">
+	<label class="control-label" for="">手机号</label>
+	<div>
+	  <input class="form-control telphone" type="text" placeholder="手机号" name="telphone">
+	</div>
+	<div class="form-actions">
+	  <button class="btn blue getotp" type="submit">获取otp短信</button>
+	</div>
+      </div>
+    </div>
+  </body>
+</html>
